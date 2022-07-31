@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:getx_shopping_cart/controller/shopping_controller.dart';
 
 class ShoppingPage extends StatelessWidget {
-  const ShoppingPage({Key? key}) : super(key: key);
+  ShoppingPage({Key? key}) : super(key: key);
+
+  final shoppingController = Get.put(ShoppingController());
 
   @override
   Widget build(BuildContext context) {
@@ -22,49 +26,54 @@ class ShoppingPage extends StatelessWidget {
               height: 25,
             ),
             Expanded(
-              child: ListView.builder(
-                itemBuilder: (context, index) {
-                  return Card(
-                    margin: const EdgeInsets.all(12),
-                    child: Padding(
-                      padding: const EdgeInsets.all(18),
-                      child: Column(
-                        // crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
-                                    'Product name',
-                                    style: TextStyle(
-                                      fontSize: 24,
+              // EX 임시방편으로 streamBuilder로 만들었다가 바꿈
+              // EX 이 controller를 통해서 모든 데이터 정보를 가져올 수 있다.
+              child: GetX<ShoppingController>(builder: (controller) {
+                return ListView.builder(
+                  itemBuilder: (context, index) {
+                    return Card(
+                      margin: const EdgeInsets.all(12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(18),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      controller.products[index].productName,
+                                      style: const TextStyle(
+                                        fontSize: 24,
+                                      ),
                                     ),
-                                  ),
-                                  Text('Product description'),
-                                ],
-                              ),
-                              const Text(
-                                '\$30',
-                                style: TextStyle(
-                                  fontSize: 24,
+                                    Text(controller
+                                        .products[index].productDescription),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: const Text('Add to cart'),
-                          ),
-                        ],
+                                Text(
+                                  '\$${controller.products[index].price}',
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            ElevatedButton(
+                              onPressed: () {},
+                              child: const Text('Add to cart'),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-                itemCount: 5,
-              ),
+                    );
+                  },
+                  itemCount: controller.products.length,
+                );
+              }),
             ),
             const SizedBox(
               height: 30,
