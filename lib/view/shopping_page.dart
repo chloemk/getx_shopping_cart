@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:getx_shopping_cart/controller/cart_controller.dart';
 import 'package:getx_shopping_cart/controller/shopping_controller.dart';
 
 class ShoppingPage extends StatelessWidget {
   ShoppingPage({Key? key}) : super(key: key);
 
+  // EX DI생성.
+  // EX 한번 DI되면 다시 생성 할 필요는 없다. 설령 다른 페이지로 이동해도 Get.find 메서드로 얼마든지 controller를 불러올 수 있기 때문이다.
   final shoppingController = Get.put(ShoppingController());
+  final cartController = Get.put(CartController());
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +67,10 @@ class ShoppingPage extends StatelessWidget {
                               ],
                             ),
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                cartController
+                                    .addToItem(controller.products[index]);
+                              },
                               child: const Text('Add to cart'),
                             ),
                           ],
@@ -78,11 +85,27 @@ class ShoppingPage extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-            const Text(
-              'Total amount',
-              style: TextStyle(fontSize: 22, color: Colors.white),
+            GetX<CartController>(builder: (controller) {
+              return Text(
+                'Total amount : \$ ${controller.totalPrice}',
+                style: const TextStyle(fontSize: 22, color: Colors.white),
+              );
+            }),
+            const SizedBox(
+              height: 100,
             ),
           ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {},
+          label: const Text(
+            'item',
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+          icon: const Icon(Icons.add_shopping_cart_rounded),
+          backgroundColor: Colors.black87,
         ),
       ),
     );
